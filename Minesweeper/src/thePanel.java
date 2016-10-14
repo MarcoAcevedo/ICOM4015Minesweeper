@@ -36,6 +36,7 @@ public class thePanel extends JPanel {
 				colorArray[x][y] = Color.WHITE;
 			}
 		}	
+		theMouseAdapter.mineGenerator(10,10);
 	}
 	
 	public void paintComponent(Graphics g) {

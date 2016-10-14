@@ -8,40 +8,57 @@ import javax.swing.JFrame;
 import java.lang.Math;
 
 public class theMouseAdapter extends MouseAdapter {
-	private Random generator = new Random();
-	int[] mines = new int[]{1,2,3,4,5,6,7,8,9,10};
+	private static Random generator = new Random();
+	static int[] minecellholder = new int[10];
+	boolean[][] mineXY=new boolean[10][10];
 	
-//	public void mineGenerator(){
-//		for(int i=0;i<8;i++){
-//			for(int j=0; j<8;j++){
-//				do{
-//					mines[i]=generator.nextInt(81);
-//				}while(mines[i] == mines[j]);
-//			}
-//		}
-//	}
-//	
-	public int mineXPos(int i){
-		if(mines[i]<10){
-			return (mines[i] -1);
+	public static void mineGenerator(int lol, int lol2){
+	int temp1;
+	int temp2;
+	for(int i=0;i<lol;i++){
+		for(int j=0;j<lol2;j++){
+			if(i==j){
+				
+			}
+			else{
+				
+				do{
+					temp1 = minecellholder[i];
+					temp2 = minecellholder[j];
+				
+				minecellholder[i] = generator.nextInt(81);
+				System.out.println("Im working");
+				
+				}while(temp1 == temp2 );
+			}
 			
 		}
+	}
+	return;
+}
+	
+	public int mineXPos(int i){//DONE
+		
+		if(minecellholder[i]<10){return (minecellholder[i] -1);}
 		else{
-			return ((int)(mines[i])%9);
+			if((minecellholder[i]%9)==0){return 8;}
+			else{return ((minecellholder[i]%9)-1);}
 		}
 		
 	}
 	
+	
 	public int mineYPos(int i){
-		if(mines[i]<10){
-			return 0;
-		}
+		if(minecellholder[i]<10){//This is done
+			return 0;}
 		else{
-			return ( (int) ((mines[i])/9.0));
+			if(minecellholder[i]%9==0){
+				return ((minecellholder[i]/9)-1);
+			}
+			else{
+				return(minecellholder[i]/9);
+			}//working here
 		}
-			
-			
-		
 	}
 	
 	public void mousePressed(MouseEvent e) {
@@ -101,6 +118,7 @@ public class theMouseAdapter extends MouseAdapter {
 		}
 	}
 	
+	
 	public void mouseReleased(MouseEvent e) {
 		
 		switch (e.getButton()) {
@@ -138,17 +156,16 @@ public class theMouseAdapter extends MouseAdapter {
 					if ((myPanel.mouseDownGridX != gridX) || (myPanel.mouseDownGridY != gridY)) {
 						//Released the mouse button on a different cell where it was pressed
 					}
-					else {
-						//Insert Code Here for left click action
-						for(int i=0; i<10;i++){
-							if(mineXPos(i) == myPanel.mouseDownGridX && mineYPos(i) == myPanel.mouseDownGridY){
-								myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = Color.BLACK;
-								myPanel.repaint();
-							}
-							else{
-								
-							}
+					else {//Insert Code Here for left click action
 						
+						for(int i=0;i<10;i++){
+							mineXY[mineXPos(i)][mineYPos(i)]=true;
+						}
+						if(mineXY[myPanel.mouseDownGridX][myPanel.mouseDownGridY]){
+							myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY]=Color.BLACK;
+						}
+						else{
+							System.out.println("code for non...");
 						}
 					}
 				}
