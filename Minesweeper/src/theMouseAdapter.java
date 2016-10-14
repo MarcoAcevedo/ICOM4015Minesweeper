@@ -5,6 +5,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Random;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import java.lang.Math;
 
 public class theMouseAdapter extends MouseAdapter {
@@ -163,9 +165,14 @@ public class theMouseAdapter extends MouseAdapter {
 						}
 						if(mineXY[myPanel.mouseDownGridX][myPanel.mouseDownGridY]){
 							myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY]=Color.BLACK;
+							myPanel.repaint();
+							JOptionPane.showMessageDialog(null, "You Loose");
+							System.exit(0);
+							System.out.println("Mine Here You Loose");
 						}
 						else{
-							System.out.println("code for non...");
+							System.out.println("No Mines Here");
+							myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY]=Color.LIGHT_GRAY;
 						}
 					}
 				}
@@ -204,24 +211,22 @@ public class theMouseAdapter extends MouseAdapter {
 					//is releasing outside
 				}
 				else{
-					
-				
 					if ((myPanelR.mouseDownGridX != gridXR) || (myPanelR.mouseDownGridY != gridYR)) {
 					//Released the mouse button on a different cell where it was pressed
 					}
 					else {
 						if(myPanelR.colorArray[myPanelR.mouseDownGridX][myPanelR.mouseDownGridY] == Color.WHITE){
 							myPanelR.colorArray[myPanelR.mouseDownGridX][myPanelR.mouseDownGridY] = Color.RED;
-							myPanelR.repaint();
 						}
 						else{
-							myPanelR.colorArray[myPanelR.mouseDownGridX][myPanelR.mouseDownGridY] = Color.WHITE;
-							myPanelR.repaint();
+							//if(myPanelR.colorArray[myPanelR.mouseDownGridX][myPanelR.mouseDownGridX]==Color.RED){
+								myPanelR.colorArray[myPanelR.mouseDownGridX][myPanelR.mouseDownGridY] = Color.WHITE;
+							//}
 						}
 					}
 				}
 			}
-			
+			myPanelR.repaint();
 			break;
 			
 		default://Some other button (2 = Middle mouse button, etc.)

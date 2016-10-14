@@ -11,7 +11,7 @@ public class thePanel extends JPanel {
 	private static final int GRID_Y = 25;
 	private static final int INNER_CELL_SIZE = 29;
 	private static final int TOTAL_COLUMNS = 9;
-	private static final int TOTAL_ROWS = 9;   //Last row has only one cell
+	private static final int TOTAL_ROWS = 9;
 	public int x = -1;
 	public int y = -1;
 	public int mouseDownGridX = 0;
