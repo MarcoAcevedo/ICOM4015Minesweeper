@@ -7,28 +7,25 @@ import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import java.lang.Math;
-
 public class theMouseAdapter extends MouseAdapter {
 	private static Random generator = new Random();
-	static int[] minecellholder = new int[10];
-	boolean[][] mineXY=new boolean[10][10];
+	static int mineQuantity =20;
+	static int[] minecellholder = new int[mineQuantity];
+	boolean[][] mineXY=new boolean[mineQuantity][mineQuantity];
 	
-	public static void mineGenerator(int lol, int lol2){
+	public static void mineGenerator(int quantity, int buffer){
+	
 	int temp1;
 	int temp2;
-	for(int i=0;i<lol;i++){
-		for(int j=0;j<lol2;j++){
+	for(int i=0;i<quantity;i++){
+		for(int j=0;j<buffer;j++){
 			if(i==j){
-				
 			}
 			else{
-				
-				do{
-					temp1 = minecellholder[i];
-					temp2 = minecellholder[j];
-				
+				do{	
 				minecellholder[i] = generator.nextInt(81);
+				temp1 = minecellholder[i];
+				temp2 = minecellholder[j];
 				System.out.println("Im working");
 				
 				}while(temp1 == temp2 );
@@ -160,7 +157,7 @@ public class theMouseAdapter extends MouseAdapter {
 					}
 					else {//Insert Code Here for left click action
 						
-						for(int i=0;i<10;i++){
+						for(int i=0;i<mineQuantity;i++){
 							mineXY[mineXPos(i)][mineYPos(i)]=true;
 						}
 						if(mineXY[myPanel.mouseDownGridX][myPanel.mouseDownGridY]){
