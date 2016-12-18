@@ -1,11 +1,11 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.util.Random;
 import javax.swing.JPanel;
 
 public class thePanel extends JPanel {
-	
 	private static final long serialVersionUID = 3426940946811133635L;
 	private static final int GRID_X = 25;
 	private static final int GRID_Y = 25;
@@ -14,9 +14,13 @@ public class thePanel extends JPanel {
 	private static final int TOTAL_ROWS = 9;
 	public int x = -1;
 	public int y = -1;
+	public static final int numberOfMines=20;
 	public int mouseDownGridX = 0;
 	public int mouseDownGridY = 0;
 	public Color[][] colorArray = new Color[TOTAL_COLUMNS][TOTAL_ROWS];
+	public String[][] proximity = new String[TOTAL_COLUMNS][TOTAL_ROWS];
+	
+	
 	
 	public thePanel() {   //This is the constructor... this code runs first to initialize
 		if (INNER_CELL_SIZE + (new Random()).nextInt(1) < 1) {	//Use of "random" to prevent unwanted Eclipse warning
@@ -34,10 +38,13 @@ public class thePanel extends JPanel {
 		for (int x = 0; x < TOTAL_COLUMNS; x++) {
 			for (int y = 0; y < TOTAL_ROWS; y++){
 				colorArray[x][y] = Color.WHITE;
+				proximity[x][y]="";
 			}
 		}	
-		theMouseAdapter.mineGenerator(20,20);
+		theMouseAdapter.mineGenerator();
 	}
+	
+	
 	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -72,10 +79,15 @@ public class thePanel extends JPanel {
 					Color c = colorArray[x][y];
 					g.setColor(c);
 					g.fillRect(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 1, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 1, INNER_CELL_SIZE, INNER_CELL_SIZE);
+					g.setColor(Color.RED);
+					g.setFont(new Font("Goudy Stout", Font.PLAIN, 14));
+					g.drawString(proximity[x][y], x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 10, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 20);
 				}
 			}
 		}
 	}
+	
+	
 	
 	public int getGridX(int x, int y) {
 		Insets myInsets = getInsets();
@@ -107,6 +119,8 @@ public class thePanel extends JPanel {
 		return x;
 	}
 	
+	
+	
 	public int getGridY(int x, int y) {
 		Insets myInsets = getInsets();
 		int x1 = myInsets.left;
@@ -136,4 +150,7 @@ public class thePanel extends JPanel {
 		
 		return y;
 	}
+
+
+	
 }

@@ -3,62 +3,72 @@ import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
 import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class theMouseAdapter extends MouseAdapter {
 	private static Random generator = new Random();
-	static int mineQuantity =20;
-	static int[] minecellholder = new int[mineQuantity];
+	static int mineQuantity =thePanel.numberOfMines;
+	public int tilesCounter=0;
+	public static HashMap<Integer,Integer> mineHolder = new HashMap<Integer,Integer>();
 	boolean[][] mineXY=new boolean[mineQuantity][mineQuantity];
 	
-	public static void mineGenerator(int quantity, int buffer){
 	
-	int temp1;
-	int temp2;
-	for(int i=0;i<quantity;i++){
-		for(int j=0;j<buffer;j++){
-			if(i==j){
+	
+	public static void mineGenerator(){
+		int buffer =0;
+		for(int i=0; i<mineQuantity;i++){
+			System.out.println("For Loop");
+			buffer=generator.nextInt(81);
+			if(mineHolder.containsValue(buffer)){
+				do{
+					buffer=generator.nextInt(81);
+					
+				}while(mineHolder.containsValue(buffer));
+				mineHolder.put(i,buffer);
+			}else{
+					mineHolder.put(i,buffer);
 			}
-			else{
-				do{	
-				minecellholder[i] = generator.nextInt(81);
-				temp1 = minecellholder[i];
-				temp2 = minecellholder[j];
-				System.out.println("Im working");
-				
-				}while(temp1 == temp2 );
-			}
-			
+		}
+		
+	}
+	
+	
+	public void minePosTranslate(){
+		for(int i=0;i<mineHolder.size();i++){
+			mineXY[mineXPos(i)][mineYPos(i)]=true;
 		}
 	}
-	return;
-}
 	
-	public int mineXPos(int i){//DONE
+	
+	public int mineXPos(int i){ //DONE
 		
-		if(minecellholder[i]<10){return (minecellholder[i] -1);}
+		if(mineHolder.get(i)<10){return (mineHolder.get(i) -1);}
 		else{
-			if((minecellholder[i]%9)==0){return 8;}
-			else{return ((minecellholder[i]%9)-1);}
+			if((mineHolder.get(i)%9)==0){return 8;}
+			else{return ((mineHolder.get(i)%9)-1);}
 		}
 		
 	}
 	
 	
-	public int mineYPos(int i){
-		if(minecellholder[i]<10){//This is done
+	
+	public int mineYPos(int i){//This is done
+		if(mineHolder.get(i)<10){
 			return 0;}
 		else{
-			if(minecellholder[i]%9==0){
-				return ((minecellholder[i]/9)-1);
+			if(mineHolder.get(i)%9==0){
+				return ((mineHolder.get(i)/9)-1);
 			}
 			else{
-				return(minecellholder[i]/9);
+				return(mineHolder.get(i)/9);
 			}//working here
 		}
 	}
+	
+	
 	
 	public void mousePressed(MouseEvent e) {
 		switch (e.getButton()) {
@@ -118,7 +128,9 @@ public class theMouseAdapter extends MouseAdapter {
 	}
 	
 	
+	
 	public void mouseReleased(MouseEvent e) {
+		minePosTranslate();
 		
 		switch (e.getButton()) {
 		
@@ -157,19 +169,33 @@ public class theMouseAdapter extends MouseAdapter {
 					}
 					else {//Insert Code Here for left click action
 						
-						for(int i=0;i<mineQuantity;i++){
-							mineXY[mineXPos(i)][mineYPos(i)]=true;
-						}
+						
 						if(mineXY[myPanel.mouseDownGridX][myPanel.mouseDownGridY]){
-							myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY]=Color.BLACK;
+							System.out.println("Mine Here You Loose");
+							for(int i=0;i<9;i++){
+								for(int j=0;j<9;j++){
+									if(mineXY[i][j]){
+										myPanel.colorArray[i][j]=Color.BLACK;
+									}
+								}
+							}
 							myPanel.repaint();
 							JOptionPane.showMessageDialog(null, "You Loose");
 							System.exit(0);
-							System.out.println("Mine Here You Loose");
+							
 						}
 						else{
-							System.out.println("No Mines Here");
-							myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY]=Color.LIGHT_GRAY;
+							myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY]=Color.GRAY;
+							checkForBombs(myPanel,myPanel.mouseDownGridX,myPanel.mouseDownGridY);
+							myPanel.repaint();
+							for(int i=0;i<9;i++){
+								for(int j=0;j<9;j++){
+									if(myPanel.colorArray[i][j]!=Color.WHITE){
+										tilesCounter++;
+									}
+								}
+							}if(tilesCounter==81){JOptionPane.showMessageDialog(null, "You Win");
+							System.exit(0);}else{tilesCounter=0;}
 						}
 					}
 				}
@@ -206,6 +232,7 @@ public class theMouseAdapter extends MouseAdapter {
 			else {
 				if(((gridXR == -1) || (gridYR == -1))){
 					//is releasing outside
+					
 				}
 				else{
 					if ((myPanelR.mouseDownGridX != gridXR) || (myPanelR.mouseDownGridY != gridYR)) {
@@ -216,9 +243,9 @@ public class theMouseAdapter extends MouseAdapter {
 							myPanelR.colorArray[myPanelR.mouseDownGridX][myPanelR.mouseDownGridY] = Color.RED;
 						}
 						else{
-							//if(myPanelR.colorArray[myPanelR.mouseDownGridX][myPanelR.mouseDownGridX]==Color.RED){
+							if(myPanelR.colorArray[myPanelR.mouseDownGridX][myPanelR.mouseDownGridY]==Color.RED){
 								myPanelR.colorArray[myPanelR.mouseDownGridX][myPanelR.mouseDownGridY] = Color.WHITE;
-							//}
+							}
 						}
 					}
 				}
@@ -233,4 +260,143 @@ public class theMouseAdapter extends MouseAdapter {
 		}
 	}
 
+
+
+	private void checkForBombs(thePanel panel, int x, int y) {
+
+
+
+		int counter = 0;
+
+		if((x -1 >= 0 && x -1 < 9)
+				&&  (y >= 0 && y < 9) 
+				&& mineXY[x -1][y]){
+			counter ++;
+		} 
+		if((x -1 >= 0 && x -1 < 9)
+				&&  (y-1 >= 0 && y -1 < 9) 
+				&& mineXY[x -1][ y -1]){
+			counter ++;
+		} 
+
+		if((x  >= 0 && x < 9)
+				&&  (y-1 >= 0 && y-1 < 9) 
+				&& mineXY[x][ y-1]){
+			counter ++;
+		} 
+		if((x +1 >= 0 && x + 1< 9)
+				&&  (y >= 0 && y < 9) 
+				&& mineXY[x + 1][ y]){
+			counter ++;
+		} 
+		if((x + 1 >= 0 && x + 1 < 9)
+				&&  (y + 1>= 0 && y + 1 < 9) 
+				&& mineXY[x + 1][ y + 1]){
+			counter ++;
+		} 
+		if((x >= 0 && x < 9)
+				&&  (y + 1>= 0 && y + 1< 9) 
+				&& mineXY[x][ y + 1]){
+			counter ++;
+		} 
+		if((x -1 >= 0 && x -1 < 9)
+				&&  (y + 1 >= 0 && y + 1 < 9) 
+				&& mineXY[x -1][ y + 1]){
+			counter ++;
+		} 
+		if((x + 1 >= 0 && x + 1 < 9)
+				&&  (y - 1 >= 0 && y - 1 < 9) 
+				&& mineXY[x + 1][ y - 1]){
+			counter ++;
+		} 
+		//Set The Number on Tile
+		if (counter > 0) {
+
+			Color newColor = Color.LIGHT_GRAY;
+			panel.colorArray[x][y] = newColor;	
+			panel.proximity[x][y] =  counter + "";
+
+		} else {
+			//If Not Mine Found
+			if((x - 1 >= 0 && x - 1 < 9)
+					&&  (y >= 0 && y < 9) 
+					&& !panel.colorArray[x - 1][y].equals(Color.GRAY) 
+					&& !panel.colorArray[x - 1][y].equals(Color.RED) 
+					&& !mineXY[x - 1][ y]){
+				Color newColor =  Color.GRAY;
+				panel.colorArray[x - 1][y] = newColor;
+				checkForBombs(panel, x - 1, y);	
+			} 
+			if((x - 1 >= 0 && x - 1 < 9)
+					&&  (y -1 >= 0 && y -1 < 9) 
+					&& !panel.colorArray[x - 1][y -1].equals(Color.GRAY) 
+					&& !panel.colorArray[x - 1][y -1].equals(Color.RED) 
+					&& !mineXY[x - 1][ y -1]){
+				Color newColor =  Color.GRAY;
+				panel.colorArray[x - 1][y -1] = newColor;
+				checkForBombs(panel, x - 1, y -1);
+			} 
+			if((x - 1 >= 0 && x - 1 < 9)
+					&&  (y + 1 >= 0 && y + 1 < 9) 
+					&& !panel.colorArray[x - 1][y + 1].equals(Color.GRAY) 
+					&& !panel.colorArray[x - 1][y + 1].equals(Color.RED) 
+					&& !mineXY[x - 1][ y + 1]){
+				Color newColor =  Color.GRAY;
+				panel.colorArray[x - 1][y + 1] = newColor;
+				checkForBombs(panel, x - 1, y + 1);
+			} 
+			if((x >= 0 && x < 9)
+					&&  (y -1 >= 0 && y -1 < 9) 
+					&& !panel.colorArray[x][y -1].equals(Color.GRAY) 
+					&& !panel.colorArray[x][y -1].equals(Color.RED) 
+					&& !mineXY[x][ y -1]){
+				Color newColor =  Color.GRAY;
+				panel.colorArray[x][y -1] = newColor;
+				checkForBombs(panel, x, y -1);
+			} 
+			if((x >= 0 && x < 9)
+					&&  (y + 1 >= 0 && y + 1 < 9) 
+					&& !panel.colorArray[x][y + 1].equals(Color.GRAY) 
+					&& !panel.colorArray[x][y + 1].equals(Color.RED) 
+					&& !mineXY[x][y + 1]){
+				Color newColor =  Color.GRAY;
+				panel.colorArray[x][y + 1] = newColor;
+				checkForBombs(panel, x, y + 1);
+			} 
+			if((x + 1 >= 0 && x + 1 < 9)
+					&&  (y >= 0 && y < 9) 
+					&& !panel.colorArray[x + 1][y].equals(Color.GRAY) 
+					&& !panel.colorArray[x + 1][y].equals(Color.RED) 
+					&& !mineXY[x + 1][ y]){
+				Color newColor =  Color.GRAY;
+				panel.colorArray[x + 1][y] = newColor;
+				checkForBombs(panel, x + 1, y);
+			} 
+			if((x + 1 >= 0 && x + 1 < 9)
+					&&  (y - 1>= 0 && y -1 < 9) 
+					&& !panel.colorArray[x + 1][y -1].equals(Color.GRAY) 
+					&& !panel.colorArray[x + 1][y - 1].equals(Color.RED) 
+					&& !mineXY[x + 1][y - 1]){
+				Color newColor =  Color.GRAY;
+				panel.colorArray[x + 1][y - 1] = newColor;
+				checkForBombs(panel, x + 1, y - 1);
+			} 
+			if((x + 1 >= 0 && x + 1 < 9)
+					&&  (y + 1 >= 0 && y + 1 < 9) 
+					&& !panel.colorArray[x + 1][y + 1].equals(Color.GRAY) 
+					&& !panel.colorArray[x + 1][y + 1].equals(Color.RED) 
+					&& !mineXY[x + 1][ y + 1]){
+				Color newColor =  Color.GRAY;
+				panel.colorArray[x + 1][y + 1] = newColor;
+				checkForBombs(panel, x + 1, y + 1);
+			} 
+		}
+	}
+
+
+
+
+
+	
+	
 }
